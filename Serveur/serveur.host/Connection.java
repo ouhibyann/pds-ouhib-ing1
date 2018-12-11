@@ -4,29 +4,28 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.io.IOException;
 import java.util.Properties;
 
 import properties.LoadProperties;
 
 public class Connection {
 	
-	public static void main(String[] zero) {
+	
 	Properties config;
 	String url;
 	String user;
 	String password;
 	
-	//public Connection() {
+	public Connection() {
 		
 				
 			try {
 				
 				config = LoadProperties.load("src/properties/config.properties");
 				Class.forName(config.getProperty("driver"));
-				url = config.getProperty("url");
-				user = config.getProperty("user");
-				password = config.getProperty("password");
+				this.url = config.getProperty("url");
+				this.user = config.getProperty("user");
+				this.password = config.getProperty("password");
 	
 				java.sql.Connection con = DriverManager.getConnection(url, user, password);
 				
@@ -55,4 +54,3 @@ public class Connection {
 			}
 		}
 	}
-
