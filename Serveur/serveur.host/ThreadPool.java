@@ -10,7 +10,7 @@ public class ThreadPool implements Runnable{
 	private Socket socket;
 	private int nb_connexions = 1;
 	
-	public ThreadPool(ServerSocket s) { //Pool de thread qui s'occupe de gérer les connexions 
+	public ThreadPool(ServerSocket s) { //Pool de thread qui s'occupe de gérer les clients 
 		serversocket = s; 
 	}
 	
