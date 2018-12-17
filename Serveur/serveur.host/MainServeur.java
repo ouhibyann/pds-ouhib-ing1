@@ -19,10 +19,8 @@ public class MainServeur {
 			Socket socketduserveur = serversocket.accept(); 
 			PrintWriter out = new PrintWriter(socketduserveur.getOutputStream());
 
-			Connection c = new Connection();
-			
-			out.println("Vous êtes connecte !"); //on affiche à l'utilisateur qu'on est bien co
-	       
+			Profil p = new Profil();
+			out.write(p.getProfil());
 			
 			out.flush();    
 			serversocket.close();
