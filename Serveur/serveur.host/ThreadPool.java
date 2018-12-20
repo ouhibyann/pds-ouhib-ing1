@@ -1,29 +1,64 @@
 package serveur.host;
 
 import java.io.IOException;
+
+//import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.rmi.UnknownHostException;
 
-public class ThreadPool implements Runnable{
+public class ThreadPool {
 
 	private ServerSocket serversocket;
-	private Socket socket;
+	
 	private int nb_connexions = 1;
+	private boolean isRunning = true;
+
 	
-	public ThreadPool(ServerSocket s) { //Pool de thread qui s'occupe de gérer les clients 
-		serversocket = s; 
-	}
-	
-	public void run() {
+	public ThreadPool() { //Pool de thread qui s'occupe de gérer les clients 
+
 		try {
-			while(true) {
-				socket = serversocket.accept();
-				System.out.println("Le client numéro :" +nb_connexions+ "est connecte !");
-				nb_connexions++;
-				socket.close();
-			}
-		} catch(IOException e) {
+			serversocket = new ServerSocket(2019,2);
+		} catch (UnknownHostException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
+	
+	
+	public void open() { //C'est ici que la gestion des connexions s'effectue
+		
+		Thread t = new Thread(new Runnable() { //On lance notre serveur 
+			public void run() {
+				while(isRunning == true) {
+					try {
+					Socket client = serversocket.accept(); //On attend une connexion d'un client
+					
+					System.out.println("Le client numéro :" +nb_connexions+ "est connecte !"); //une fois reçue, on la triate dans un thread séparé
+					Thread t = new Thread(new ClientProcessor(client)); 
+					t.start();
+					nb_connexions++;
+					
+					} catch(IOException e) {
+						e.printStackTrace();
+					}
+				}
+				
+				try {
+					serversocket.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+					serversocket = null;
+				}
+				
+			}
+		});
+		t.start();
+	}
+	
+	public void close() {
+		isRunning = false;
+	}
 }
+
