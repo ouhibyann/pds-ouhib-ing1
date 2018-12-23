@@ -31,19 +31,27 @@ public class ThreadPool {
 
 		Thread t = new Thread(new Runnable() { //On lance notre serveur 
 			public void run() {
-				while(isRunning == true && nb_connexions < 3) {
+				while(isRunning == true) {
+					
 					try {
-					Socket client = serversocket.accept(); //On attend une connexion d'un client
+						if (nb_connexions >= 3) {
+							System.out.println("Trop de Client déjà connecté");
+							isRunning = false;
+							
+						} else {
+							Socket client = serversocket.accept(); //On attend une connexion d'un client
+							
+							System.out.println("Le client numéro : " +nb_connexions+ " est connecte !"); //une fois reçue, on la traite dans un thread séparé
+							Thread t = new Thread(new ClientProcessor(client)); 
+							t.start();
+							nb_connexions++;
+						}
+						
+						} catch(IOException e) {
+							e.printStackTrace();
+						}
 					
-					System.out.println("Le client numéro :" +nb_connexions+ "est connecte !"); //une fois reçue, on la traite dans un thread séparé
-					Thread t = new Thread(new ClientProcessor(client)); 
-					t.start();
-					nb_connexions++;
-					
-					} catch(IOException e) {
-						e.printStackTrace();
 					}
-				}
 				
 				try {
 					serversocket.close();
