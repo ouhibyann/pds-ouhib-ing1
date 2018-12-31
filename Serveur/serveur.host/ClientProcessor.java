@@ -35,7 +35,7 @@ public class ClientProcessor implements Runnable{
 				
 					case "envoie":
 						
-						System.out.println("commande envoie detectee");
+						System.out.println("Commande envoie detectee");
 						Profil p = new Profil();
 						gson.toJson(p.getProfil(), out); //Serialisation
 						out.flush();
@@ -43,7 +43,9 @@ public class ClientProcessor implements Runnable{
 						break;
 					
 					case "close":
-						System.err.println("commande close detectee");
+						System.err.println("Commande close detectee");
+						gson.toJson("La connexion va s'arreter", out);
+						out.flush();
 						in.close();
 						out.close();
 						socketduserveur.close();
@@ -61,4 +63,3 @@ public class ClientProcessor implements Runnable{
 		
 	}
 }
-
