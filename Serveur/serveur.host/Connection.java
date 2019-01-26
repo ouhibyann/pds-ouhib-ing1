@@ -16,7 +16,7 @@ public class Connection {
 	String password;
 	
 	public Connection() {
-		try {
+		try { //On charge les propriétés depuis le fichier texte config
 			
 			config = LoadProperties.load("src/properties/config.properties");
 			Class.forName(config.getProperty("driver"));
