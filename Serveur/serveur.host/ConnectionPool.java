@@ -42,7 +42,7 @@ public class ConnectionPool
     }
      
     public Connection createConnection(String url, String user, String password) throws SQLException {
-        return (Connection) DriverManager.getConnection(url, user, password);
+        return DriverManager.getConnection(url, user, password);
     }
      
     
