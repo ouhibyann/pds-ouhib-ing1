@@ -6,20 +6,32 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.net.SocketException;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.Properties;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+import properties.LoadProperties;
 
-public class ClientProcessor implements Runnable{
+
+public class ClientProcessor extends Thread{
 	
 	private static Socket socketduserveur;
-	
+	Properties config;
+	String url;
+	String user;
+	String password;
 	
 	public ClientProcessor(Socket Sock) {
 		socketduserveur = Sock;
 	}
 
+	public ClientProcessor() {
+		
+	}
 	
 	public void run() {
 	
@@ -36,9 +48,9 @@ public class ClientProcessor implements Runnable{
 					case "envoie":
 						
 						System.out.println("Commande envoie detectee");
-						Profil p = new Profil();
-						gson.toJson(p.getProfil(), out); //Serialisation
+						gson.toJson(getProfil(), out); //Serialisation
 						out.flush();
+						//out.close();
 						socketduserveur.close();
 						break;
 					
@@ -62,4 +74,49 @@ public class ClientProcessor implements Runnable{
 		}
 		
 	}
+	
+	private String getProfil() {
+		try {
+			
+			String result = "";
+			try {
+				
+				config = LoadProperties.load("src/properties/config.properties");
+				Class.forName(config.getProperty("driver"));
+				this.url = config.getProperty("url");
+				this.user = config.getProperty("user");
+				this.password = config.getProperty("password");
+				
+				
+				} catch (ClassNotFoundException e) {
+					e.printStackTrace();
+			}
+			ConnectionPool c = ConnectionPool.create(url, user, password);
+			
+			String sql = "SELECT \"Profil\", customer_name, shop_bookmarked, customer_id\n" + 
+					"	FROM public.\"Profils\";";
+			
+			Statement st = c.createConnection(c.getUrl(), c.getUser(), c.getPassword()).createStatement();
+			
+			ResultSet rs = st.executeQuery(sql);
+			
+			while(rs.next()) {
+				
+				String profil = rs.getString("profil");
+				String shop_name =  rs.getString("shop_bookmarked");  //shop_name
+				String customer_name = rs.getString("customer_name");  //customer_name
+				int customer_id =  rs.getInt("customer_id"); //customer_id
+				
+				result += profil + " " + shop_name + " " + customer_name + " " + customer_id + "\n";
+				
+			}
+			st.close();
+			return result;
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+	
 }
