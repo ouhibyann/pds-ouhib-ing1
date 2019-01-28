@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketException;
 import java.sql.ResultSet;
@@ -19,15 +20,13 @@ import properties.LoadProperties;
 
 public class ClientProcessor extends Thread{
 	
-	private static Socket socketduserveur;
+	private Socket socketduserveur = new Socket();
+	private ServerSocket serversocket;
 	Properties config;
 	String url;
 	String user;
 	String password;
-	
-	public ClientProcessor(Socket Sock) {
-		socketduserveur = Sock;
-	}
+
 
 	public ClientProcessor() {
 		
@@ -35,6 +34,12 @@ public class ClientProcessor extends Thread{
 	
 	public void run() {
 	
+		try {
+			serversocket = new ServerSocket(2019);
+			socketduserveur = serversocket.accept();
+		} catch(IOException e) {
+			e.printStackTrace();
+		}
 		
 		while(!socketduserveur.isClosed()) {	
 			try {
