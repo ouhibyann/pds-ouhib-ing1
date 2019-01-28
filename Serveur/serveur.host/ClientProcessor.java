@@ -91,12 +91,13 @@ public class ClientProcessor extends Thread{
 				} catch (ClassNotFoundException e) {
 					e.printStackTrace();
 			}
-			ConnectionPool c = ConnectionPool.create(url, user, password);
+			ConnectionPool c = new ConnectionPool(url, user, password);
+			c.create(url, user, password);
 			
 			String sql = "SELECT \"Profil\", customer_name, shop_bookmarked, customer_id\n" + 
 					"	FROM public.\"Profils\";";
 			
-			Statement st = c.createConnection(c.getUrl(), c.getUser(), c.getPassword()).createStatement();
+			Statement st = ((java.sql.Connection) c.createConnection(c.getUrl(), c.getUser(), c.getPassword())).createStatement();
 			
 			ResultSet rs = st.executeQuery(sql);
 			
@@ -120,3 +121,4 @@ public class ClientProcessor extends Thread{
 	}
 	
 }
+
