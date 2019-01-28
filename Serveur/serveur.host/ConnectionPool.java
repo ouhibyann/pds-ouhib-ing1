@@ -15,14 +15,14 @@ public class ConnectionPool
     private List<Connection> usedConnections = new ArrayList<>();
     private static int INITIAL_POOL_SIZE = 10;
      
-    public ConnectionPool(String url, String user, String password,List<Connection> pool) {}
-    public static ConnectionPool create(String url, String user, String password) throws SQLException {
+    public ConnectionPool(String url, String user, String password) {}
+    public ConnectionPool create(String url, String user, String password) throws SQLException {
   
         List<Connection> pool = new ArrayList<>(INITIAL_POOL_SIZE);
         for (int i = 0; i < INITIAL_POOL_SIZE; i++) {
             pool.add(createConnection(url, user, password));
         }
-        return new ConnectionPool(url, user, password, pool);
+        return new ConnectionPool(url, user, password);
     }
      
     // standard constructors
@@ -42,7 +42,7 @@ public class ConnectionPool
     }
      
     public Connection createConnection(String url, String user, String password) throws SQLException {
-        return DriverManager.getConnection(url, user, password);
+        return (Connection) DriverManager.getConnection(url, user, password);
     }
      
     
