@@ -16,7 +16,7 @@ public class ConnectionPool
     private static int INITIAL_POOL_SIZE = 10;
      
     public ConnectionPool(String url, String user, String password,List<Connection> pool) {}
-    public ConnectionPool create(String url, String user, String password) throws SQLException {
+    public static ConnectionPool create(String url, String user, String password) throws SQLException {
   
         List<Connection> pool = new ArrayList<>(INITIAL_POOL_SIZE);
         for (int i = 0; i < INITIAL_POOL_SIZE; i++) {
