@@ -76,7 +76,7 @@ public class ClientProcessor extends Thread{
 							
 							System.out.println("Commande envoie detectee");
 							tosend = getProfil();
-							System.out.println(tosend);
+							//System.out.println(tosend);
 							
 							//out.flush();
 							//out.close();
