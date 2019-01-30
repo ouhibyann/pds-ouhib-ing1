@@ -21,22 +21,28 @@ public class MainClient {
 		Gson gson = new Gson();
 		
 		try {
-			
-		    Socket socket = new Socket(InetAddress.getLocalHost(),2019); //Ici, on est en local donc l'adresse IP s'obtient via getLocalHost
+			Socket socket = new Socket(InetAddress.getLocalHost(),2019); //Ici, on est en local donc l'adresse IP s'obtient via getLocalHost
 		    BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 		    PrintWriter out = new PrintWriter(socket.getOutputStream());
 		    Scanner sc  = new Scanner(System.in);
 		    
-		    System.out.println("Passez votre commande"); 
-		    String commande = sc.nextLine(); // On demande au serveur de nous envoyer les profils
-		    out.write(commande +"\n");
-		    out.flush();
-		    
-		    String received = gson.fromJson(in, String.class); //On desérialise
-		    System.out.println(received); //on récupère ce que le serveur nous envoie 
-		    //sc.close();
-		    //socket.close();
-
+				while (!socket.isClosed()) {
+			    
+			    System.out.println("Passez votre commande"); 
+			    String commande = sc.nextLine(); // On demande au serveur de nous envoyer les profils
+			    out.write(commande +"\n");
+			    out.flush();
+			    
+			    String received = gson.fromJson(in, String.class); //On desérialise
+			    System.out.println(received); //on récupère ce que le serveur nous envoie 
+			    
+			    //sc.close();
+			    if (received == null) {
+			    	//System.out.println("fin");
+			    	socket.close();
+			    	}
+				}
+				
 		} catch (UnknownHostException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
