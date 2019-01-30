@@ -1,8 +1,7 @@
-package tests;
+/*package tests;
 
-import org.codehaus.jackson.map.ObjectMapper;
 
-import serveur.host.ThreadPool;
+//import serveur.host.ThreadPool;
 
 import java.io.File;
 import java.io.IOException;
@@ -16,9 +15,8 @@ public class TestMockServeur {
 		// TODO Auto-generated method stub
 
 				
-		ObjectMapper mapper = new ObjectMapper();
+		
 		try {
-			mapper.writeValueAsString(new File("D:\\Yann\\Téléchargements"));
 			
 			
 			ServerSocket serversocket = new ServerSocket(2019, 2); //num_port, nb_max_of_co
@@ -29,10 +27,7 @@ public class TestMockServeur {
 			PrintWriter out = new PrintWriter(socketduserveur.getOutputStream());
 
 			//t.start();
-			
-
-			String toClient = mapper.writeValueAsString(null); //On sereialise
-			out.write(toClient); //on envoie au client 
+		
 			out.flush();  
 	        socketduserveur.close();
 
@@ -41,4 +36,4 @@ public class TestMockServeur {
 		}
 	}
 
-}
+}*/
