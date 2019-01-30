@@ -13,40 +13,40 @@ public class ConnectionPool
     private String password;
     private List<java.sql.Connection> connectionPool;
     private List<java.sql.Connection> usedConnections = new ArrayList<>();
-    private static int INITIAL_POOL_SIZE = 10;
+    private static int INITIAL_POOL_SIZE = 2;
      
     public ConnectionPool(String url, String user, String password) {}
+    
     public ConnectionPool create(String url, String user, String password) throws SQLException {
   
-        List<Connection> pool = new ArrayList<>(INITIAL_POOL_SIZE);
+        connectionPool = new ArrayList<>(INITIAL_POOL_SIZE);
         for (int i = 0; i < INITIAL_POOL_SIZE; i++) {
-            pool.add(createConnection(url, user, password));
+        	connectionPool.add(createConnection(url, user, password));
         }
         return new ConnectionPool(url, user, password);
     }
      
-    // standard constructors
      
-    @Override
+  
     public java.sql.Connection getConnection() {
         java.sql.Connection connection = connectionPool.remove(connectionPool.size() - 1);
         usedConnections.add(connection);
         return connection;
     }
      
-    @Override
+    
     public boolean releaseConnection(java.sql.Connection connection) {
         connectionPool.add(connection);
         return usedConnections.remove(connection);
     }
      
-    public Connection createConnection(String url, String user, String password) throws SQLException {
+    public java.sql.Connection createConnection(String url, String user, String password) throws SQLException {
         return DriverManager.getConnection(url, user, password);
     }
      
     
     public int getSize() {
-        return connectionPool.size() + usedConnections.size();
+        return connectionPool.size();
     }
 
 	public String getUrl() {
