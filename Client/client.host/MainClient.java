@@ -24,7 +24,7 @@ public class MainClient {
 		
 		try {
 			InetSocketAddress inet = new InetSocketAddress("192.168.20.13",1042);
-			Socket socket = new Socket(); //Ici, on n'est pas en local donc l'adresse IP s'obtient via getLocalHost
+			Socket socket = new Socket(); //Ici, on n'est pas en local
 		    System.out.println(inet.getHostName());
 		    socket.connect(inet);
 			
