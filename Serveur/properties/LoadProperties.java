@@ -22,10 +22,10 @@ public class LoadProperties {
 			
 			Properties prop = new Properties() ;
 			prop.setProperty("driver", "org.postgresql.Driver");
-			prop.setProperty("url", "jdbc:postgresql://localhost:5432/phygitmall");
+			prop.setProperty("url", "jdbc:postgresql://10.10.10.220:5432/phygitmall");
 			prop.setProperty("user", "postgres");
-			prop.setProperty("password", "admin");
-			prop.setProperty("port",Integer.toString(9720)) ;
+			prop.setProperty("password", "123");
+			prop.setProperty("port",Integer.toString(5432)) ;
 			prop.setProperty("max", Integer.toString(20));
 			
 			return prop;
