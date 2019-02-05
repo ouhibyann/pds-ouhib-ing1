@@ -1,13 +1,13 @@
 package serveur.host;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.net.SocketException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -51,10 +51,11 @@ public class ClientProcessor extends Thread{
 	
 		PrintAvailableConnection();
 		try {
-			serversocket = new ServerSocket(2019);
+			serversocket = new ServerSocket(1042);
 			socketduserveur = serversocket.accept();
+			System.out.println("Le client : " + socketduserveur.getRemoteSocketAddress() +" est connecté");
 			
-			PrintWriter out = new PrintWriter(new OutputStreamWriter(socketduserveur.getOutputStream()), true);
+			BufferedWriter out = new BufferedWriter(new PrintWriter(new OutputStreamWriter(socketduserveur.getOutputStream()), true));
 			Gson gson = new GsonBuilder().create(); //On initialise l'objet Json
 			BufferedReader in = new BufferedReader(new InputStreamReader(socketduserveur.getInputStream()));	
 			String received = "";
@@ -93,7 +94,7 @@ public class ClientProcessor extends Thread{
 							break;			
 					}
 					
-					out.println(gson.toJson(tosend));
+					out.write(gson.toJson(tosend, String.class));
 					out.flush();
 					out.close();
 					tosend = "";
@@ -110,8 +111,8 @@ public class ClientProcessor extends Thread{
 			String result = "";
 
 			
-			String sql = "SELECT \"Profil\", customer_name, shop_bookmarked, customer_id\n" + 
-					"	FROM public.\"Profils\";";
+			String sql = "SELECT \"profil\", customer_name, shop_bookmarked, customer_id\n" + 
+					"	FROM public.\"profils\";";
 			
 			java.sql.Connection con = c.getConnection();
 			Statement st = con.createStatement();
