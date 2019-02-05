@@ -6,8 +6,10 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
-import java.net.InetAddress;
+//import java.net.InetAddress;
+import java.net.InetSocketAddress;
 import java.net.Socket;
+import java.net.SocketAddress;
 import java.net.UnknownHostException;
 import java.util.Scanner;
 
@@ -21,7 +23,11 @@ public class MainClient {
 		Gson gson = new Gson();
 		
 		try {
-			Socket socket = new Socket(InetAddress.getLocalHost(),2019); //Ici, on est en local donc l'adresse IP s'obtient via getLocalHost
+			InetSocketAddress inet = new InetSocketAddress("192.168.20.13",1042);
+			Socket socket = new Socket(); //Ici, on n'est pas en local donc l'adresse IP s'obtient via getLocalHost
+		    System.out.println(inet.getHostName());
+		    socket.connect(inet);
+			
 		    BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 		    PrintWriter out = new PrintWriter(socket.getOutputStream());
 		    Scanner sc  = new Scanner(System.in);
@@ -39,6 +45,7 @@ public class MainClient {
 			    //sc.close();
 			    if (received == null) {
 			    	//System.out.println("fin");
+			    	sc.close();
 			    	socket.close();
 			    	}
 				}
