@@ -8,6 +8,8 @@ import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -47,13 +49,42 @@ public class ClientProcessor extends Thread{
 		}
 	}
 	
+	public void create(Profils obj) {
+		int c_id;
+		int i =1;
+		try {
+			Connection con = c.getConnection();
+			Statement st = con.createStatement();
+			ResultSet rs1 = st.executeQuery("SELECT customer_id FROM public.purchase");
+			PreparedStatement ps = con.prepareStatement("INSERT INTO public.\"Profils\"(\r\n" + 
+					"	\"Profil\", customer_id)\r\n" + 
+					"	VALUES (?, ?);");
+			
+			while(rs1.next()) {
+				c_id = rs1.getInt(1);
+				if(c_id == i) {
+					System.out.println(c_id);
+					Profils p = new Profils(c_id, c);
+					System.out.println(p.getProfil());
+					ps.setString(1, p.getProfil());
+					ps.setInt(2, c_id);
+					i++;
+					ps.executeUpdate();
+				}
+				else {}
+			}
+		} catch(SQLException e) {
+			e.getMessage();
+		}
+	}
+	
 	public void run() {
 	
 		PrintAvailableConnection();
 		try {
 			serversocket = new ServerSocket(1042);
 			socketduserveur = serversocket.accept();
-			System.out.println("Le client : " + socketduserveur.getRemoteSocketAddress() +" est connecté");
+			//System.out.println("Le client : " + socketduserveur.getRemoteSocketAddress() +" est connecté");
 			
 			BufferedWriter out = new BufferedWriter(new PrintWriter(new OutputStreamWriter(socketduserveur.getOutputStream()), true));
 			Gson gson = new GsonBuilder().create(); //On initialise l'objet Json
@@ -61,7 +92,7 @@ public class ClientProcessor extends Thread{
 			String received = "";
 			String tosend = "";
 			
-			while(!socketduserveur.isClosed()) {	
+			while(!serversocket.isClosed()) {	
 
 				if (in.ready()) {
 					//received = in.readLine();
@@ -89,7 +120,7 @@ public class ClientProcessor extends Thread{
 							gson.toJson("La connexion va s'arreter", out);
 							out.flush();
 							in.close();
-							//out.close();
+							out.close();
 							//socketduserveur.close();
 							break;			
 					}
@@ -105,14 +136,18 @@ public class ClientProcessor extends Thread{
 		} 
 	}
 	
+	
 	private String getProfil() {
 		try {
 			
 			String result = "";
 
 			
-			String sql = "SELECT \"profil\", customer_name, shop_bookmarked, customer_id\n" + 
-					"	FROM public.\"profils\";";
+			String sql = "SELECT \"Profil\", customer_name, shop_bookmarked, customer_id\n" + 
+					"	FROM public.\"Profils\";";
+			
+			//String sql = "SELECT \"profil\", customer_name, shop_bookmarked, customer_id\n" + 
+					//"	FROM public.\"profils\";";
 			
 			java.sql.Connection con = c.getConnection();
 			Statement st = con.createStatement();
@@ -142,6 +177,7 @@ public class ClientProcessor extends Thread{
 			return null;
 		}
 	}
+	
 	
 	public void PrintAvailableConnection() {
 		Thread t = new Thread(new Runnable() {
