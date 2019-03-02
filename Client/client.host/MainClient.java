@@ -26,12 +26,12 @@ public class MainClient {
 		
 		try {
 			
-			Socket socket = new Socket(InetAddress.getLocalHost(),1042);
-			System.out.println(socket.getInetAddress());
-			//InetSocketAddress inet = new InetSocketAddress("192.168.20.13",1042);
-			//Socket socket = new Socket(); //Ici, on n'est pas en local donc l'adresse IP s'obtient via getLocalHost
-		    //System.out.println(inet.getHostName());
-		    //socket.connect();
+			//Socket socket = new Socket(InetAddress.getLocalHost(),1042);
+			//System.out.println(socket.getInetAddress());
+			InetSocketAddress inet = new InetSocketAddress("192.168.20.13",1042);
+			Socket socket = new Socket(); //Ici, on n'est pas en local donc l'adresse IP s'obtient via getLocalHost
+		    System.out.println(inet.getHostName());
+		    socket.connect(inet);
 			
 		    BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 		    PrintWriter out = new PrintWriter(socket.getOutputStream());
