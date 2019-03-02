@@ -56,8 +56,8 @@ public class ClientProcessor extends Thread{
 			Connection con = c.getConnection();
 			Statement st = con.createStatement();
 			ResultSet rs1 = st.executeQuery("SELECT customer_id FROM public.purchase");
-			PreparedStatement ps = con.prepareStatement("INSERT INTO public.\"Profils\"(\r\n" + 
-					"	\"Profil\", customer_id)\r\n" + 
+			PreparedStatement ps = con.prepareStatement("INSERT INTO public.\"profils\"(\r\n" + 
+					"	\"profil\", customer_id)\r\n" + 
 					"	VALUES (?, ?);");
 			
 			while(rs1.next()) {
@@ -84,7 +84,7 @@ public class ClientProcessor extends Thread{
 		try {
 			serversocket = new ServerSocket(1042);
 			socketduserveur = serversocket.accept();
-			//System.out.println("Le client : " + socketduserveur.getRemoteSocketAddress() +" est connecté");
+			System.out.println("Le client : " + socketduserveur.getRemoteSocketAddress() +" est connecté");
 			
 			BufferedWriter out = new BufferedWriter(new PrintWriter(new OutputStreamWriter(socketduserveur.getOutputStream()), true));
 			Gson gson = new GsonBuilder().create(); //On initialise l'objet Json
@@ -143,8 +143,8 @@ public class ClientProcessor extends Thread{
 			String result = "";
 
 			
-			String sql = "SELECT \"Profil\", customer_name, shop_bookmarked, customer_id\n" + 
-					"	FROM public.\"Profils\";";
+			String sql = "SELECT \"profil\", customer_name, shop_bookmarked, customer_id\n" + 
+					"	FROM public.\"profils\";";
 			
 			//String sql = "SELECT \"profil\", customer_name, shop_bookmarked, customer_id\n" + 
 					//"	FROM public.\"profils\";";
@@ -198,4 +198,3 @@ public class ClientProcessor extends Thread{
 	}
 	
 }
-
