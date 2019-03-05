@@ -49,7 +49,8 @@ public class ClientProcessor extends Thread{
 		}
 	}
 	
-	public void create(Profils obj) {
+	public void create() {
+		
 		int c_id;
 		int i =1;
 		try {
@@ -63,18 +64,20 @@ public class ClientProcessor extends Thread{
 			while(rs1.next()) {
 				c_id = rs1.getInt(1);
 				if(c_id == i) {
-					System.out.println(c_id);
+					//System.out.println(c_id);
 					Profils p = new Profils(c_id, c);
-					System.out.println(p.getProfil());
+					//System.out.println(p.getProfil());
 					ps.setString(1, p.getProfil());
 					ps.setInt(2, c_id);
 					i++;
 					ps.executeUpdate();
+					c.releaseConnection(con);
 				}
 				else {}
 			}
+			
 		} catch(SQLException e) {
-			e.getMessage();
+			e.printStackTrace();
 		}
 	}
 	
@@ -146,8 +149,6 @@ public class ClientProcessor extends Thread{
 			String sql = "SELECT \"profil\", customer_name, shop_bookmarked, customer_id\n" + 
 					"	FROM public.\"profils\";";
 			
-			//String sql = "SELECT \"profil\", customer_name, shop_bookmarked, customer_id\n" + 
-					//"	FROM public.\"profils\";";
 			
 			java.sql.Connection con = c.getConnection();
 			Statement st = con.createStatement();
@@ -178,7 +179,6 @@ public class ClientProcessor extends Thread{
 		}
 	}
 	
-	
 	public void PrintAvailableConnection() {
 		Thread t = new Thread(new Runnable() {
 			public void run() {
@@ -194,7 +194,10 @@ public class ClientProcessor extends Thread{
 		});
 		
 		t.start();
-		
+	}
+	
+	public ConnectionPool getC() {
+		return c;
 	}
 	
 }
