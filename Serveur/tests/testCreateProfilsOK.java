@@ -9,6 +9,7 @@ class testCreateProfilsOK {
 
 		ClientProcessor cp = new ClientProcessor();
 		cp.create();
+		System.out.println(cp.getProfil());
 	}
 
 }
