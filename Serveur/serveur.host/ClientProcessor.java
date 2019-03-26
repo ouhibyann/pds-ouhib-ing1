@@ -56,6 +56,7 @@ public class ClientProcessor extends Thread{
 		try {
 			Connection con = c.getConnection();
 			Statement st = con.createStatement();
+			st.execute("DELETE FROM public.\"profils\";");
 			ResultSet rs1 = st.executeQuery("SELECT customer_id FROM public.purchase");
 			PreparedStatement ps = con.prepareStatement("INSERT INTO public.\"profils\"(\r\n" + 
 					"	\"profil\", customer_id)\r\n" + 
@@ -111,11 +112,10 @@ public class ClientProcessor extends Thread{
 							
 							System.out.println("Commande envoie detectee");
 							tosend = getProfil();
-							//System.out.println(tosend);
 							
-							//out.flush();
-							//out.close();
-							//socketduserveur.close();
+							out.write(gson.toJson(tosend, String.class));
+							out.write("\n");
+							out.flush();
 							break;
 						
 						case "close":
@@ -128,9 +128,6 @@ public class ClientProcessor extends Thread{
 							break;			
 					}
 					
-					out.write(gson.toJson(tosend, String.class));
-					out.flush();
-					out.close();
 					tosend = "";
 				}
 			}
@@ -140,7 +137,7 @@ public class ClientProcessor extends Thread{
 	}
 	
 	
-	private String getProfil() {
+	public String getProfil() {
 		try {
 			
 			String result = "";
