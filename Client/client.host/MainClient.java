@@ -4,6 +4,7 @@ package client.host;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
@@ -34,9 +35,9 @@ public class MainClient {
 		    socket.connect(inet);
 			
 		    BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-		    PrintWriter out = new PrintWriter(socket.getOutputStream());
+		    BufferedWriter out = new BufferedWriter(new PrintWriter(socket.getOutputStream()));
 		    Fenetre f = new Fenetre();
-
+		    
 		    f.getJbProfil().addMouseListener(new MouseListener() {
 		    	
 		    	public void mouseReleased(MouseEvent e) {}
@@ -45,11 +46,18 @@ public class MainClient {
 				public void mouseEntered(MouseEvent e) {}
 				
 				public void mouseClicked(MouseEvent e) {
-
-					out.write("envoie \n");
-					out.flush();
-				    String received = gson.fromJson(in, String.class); //On desérialise
-					f.getshowProfil().setText(received);
+					
+					String r = "";
+					try {
+						out.write("envoie \n");
+						out.flush();
+						r = in.readLine();
+						String received = gson.fromJson(r, String.class);//On desérialise
+						f.getshowProfil().setText(received);
+					} catch (IOException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
 					
 				}
 		    	
