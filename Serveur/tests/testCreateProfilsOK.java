@@ -3,9 +3,9 @@ package tests;
 import serveur.host.ClientProcessor;
 
 class testCreateProfilsOK {
-
+	//Checks that createPorfil is OK
 	public static void main(String[] args) {
-		// TODO Auto-generated method stub
+		
 
 		ClientProcessor cp = new ClientProcessor();
 		cp.create();
