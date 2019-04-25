@@ -1,77 +1,63 @@
 package serveur.host;
 
+
+import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 
-public class ConnectionPool 
-  implements IConnectionPool {
- 
-    private String url;
-    private String user;
-    private String password;
+import properties.LoadProperties;
+
+public class ConnectionPool implements IConnectionPool {
+
     private List<java.sql.Connection> connectionPool;
-    private List<java.sql.Connection> usedConnections = new ArrayList<>();
     private static int INITIAL_POOL_SIZE = 2;
-     
-    public ConnectionPool(String url, String user, String password) {}
-    
-    public ConnectionPool create(String url, String user, String password) throws SQLException {
-  
+
+    //loading properties here is more common sense
+    public ConnectionPool() throws SQLException, ClassNotFoundException {
+        Properties config = LoadProperties.load("src/properties/config.properties");
+
+        Class.forName(config.getProperty("driver"));
+
         connectionPool = new ArrayList<>(INITIAL_POOL_SIZE);
+
         for (int i = 0; i < INITIAL_POOL_SIZE; i++) {
-        	connectionPool.add(createConnection(url, user, password));
+            connectionPool.add(DriverManager.getConnection(
+                    config.getProperty("url"),
+                    config.getProperty("user"),
+                    config.getProperty("password"))
+            );
         }
-        return new ConnectionPool(url, user, password);
-    }
-     
-     
-  
-    public java.sql.Connection getConnection() {
-        java.sql.Connection connection = connectionPool.remove(connectionPool.size() - 1);
-        usedConnections.add(connection);
-        return connection;
-    }
-     
-    
-    public boolean releaseConnection(java.sql.Connection connection) {
-        connectionPool.add(connection);
-        return usedConnections.remove(connection);
-    }
-     
-    public java.sql.Connection createConnection(String url, String user, String password) throws SQLException {
-        return DriverManager.getConnection(url, user, password);
-    }
-     
-    
-    public int getSize() {
-        return connectionPool.size();
     }
 
-	public String getUrl() {
-		return url;
-	}
 
-	public void setUrl(String url) {
-		this.url = url;
-	}
+    public Connection getConnection() {
+        return connectionPool.remove(connectionPool.size()-1);
+    }
 
-	public String getUser() {
-		return user;
-	}
 
-	public void setUser(String user) {
-		this.user = user;
-	}
+    public boolean releaseConnection(Connection connection) {
+        if (connectionPool.size() < INITIAL_POOL_SIZE) {
+            connectionPool.add(connection);
+            return true;
+        }
+        return false;
+    }
 
-	public String getPassword() {
-		return password;
-	}
+    //the method speak for itself
+    public void PrintAvailableConnection() {
+        new Thread(() -> {
+            while(true) {
+                try {
+                    System.out.println("Les connexions disponibles sont au nombre de : " + connectionPool.size());
+                    Thread.sleep(2000);
+                } catch(InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
+    }
 
-	public void setPassword(String password) {
-		this.password = password;
-	}
- 
-    
 }
