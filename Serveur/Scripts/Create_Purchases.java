@@ -1,12 +1,11 @@
 package Scripts;
 
 import java.sql.Connection;
+
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.util.Properties;
 import java.util.Random;
 
-import properties.LoadProperties;
 import serveur.host.ConnectionPool;
 
 public class Create_Purchases {
@@ -28,11 +27,6 @@ public class Create_Purchases {
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		
-		Properties config;
-		String url;
-		String user;
-		String password;
-
 		String categories[] = {"food","beaute", "mode", "culture", "maison", "hightech"};
 		String magasins_food[] = {"quick", "burgerKing", "Mcdo", "DelArte", "Vapiano"};
 		String magasins_beaute[] = {"optic2000", "parashop", "franck provost", "Afflelou", "sephora"};
@@ -43,16 +37,9 @@ public class Create_Purchases {
 		
 		 try {
 			 
-			config = LoadProperties.load("src/properties/config.properties");
-			Class.forName(config.getProperty("driver"));
-			url = config.getProperty("url");
-			user = config.getProperty("user");
-			password = config.getProperty("password");
-				
 			Class.forName("org.postgresql.Driver");
-			ConnectionPool pool = new ConnectionPool(url,user,password);
-			pool.create(url, user, password);
-				
+			ConnectionPool pool = new ConnectionPool();
+							
 			String sql = "INSERT INTO public.purchase(\r\n" + 
 			   		"	shop_category, shop_name, customer_id, price, date)\r\n" + 
 			   		"	VALUES (?, ?, ?, ?, ?);";
